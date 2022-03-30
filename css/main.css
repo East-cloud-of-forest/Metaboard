@@ -1,0 +1,15 @@
+.fixed {
+  bottom: 20px;
+  right: 20px;
+  position: fixed;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.alingcenter .v-input__append-inner {
+  align-self : center
+}

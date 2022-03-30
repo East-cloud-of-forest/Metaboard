@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,65 +10,83 @@
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./css/main.css">
 
-  <style>
-    .btngroup {
-      /* bottom:20px; right:20px; position: fixed; display: flex; flex-direction: column-reverse; align-items: center; */
-      position: absolute;
-    }
-  </style>
 </head>
+
 <body>
   <div id="app" @wheel="wheel">
+
+    <!-- 메인 버튼 -->
     <v-app>
-      <v-main>
-        <v-container>
-          <v-speed-dial class="btngroup"
-          v-model="btnopen"
-          :bottom="true"
-          :right="true"
-          transition="slide-y-reverse-transition">
-            <template v-slot:activator>
-              <v-btn
-              fab
-              dark
-              block
-              v-model="btnopen"
-              color="primary">
-                <v-icon v-show="btnopen">mdi-checkbox-blank-circle-outline</v-icon>
-                <v-icon v-show="!btnopen">mdi-dots-vertical</v-icon>
+      <div class="fixed flex">
+        <v-btn fab dark class="mt-3" @click="btnOpenToggle" color="primary">
+          <v-icon v-show="btnopen">mdi-checkbox-blank-circle-outline</v-icon>
+          <v-icon v-show="!btnopen">mdi-dots-vertical</v-icon>
+        </v-btn>
+        <v-slide-y-reverse-transition group class="flex">
+          <v-btn class="mt-3" v-for="(btn, i) in subbtn" :key="i" fab dark color="primary" v-if="btnopen" small @click="openMemoForm(i)">
+            <v-icon>{{btn.icon}}</v-icon>
+          </v-btn>
+      </div>
+
+
+      <!-- 메모 폼 -->
+      <v-dialog v-model="formopen" max-width="450">
+        <v-card>
+          <v-card-title class="accent white--text">
+            메모작성
+          </v-card-title>
+          <v-form class="px-8 pb-4" @submit.prevent="addMemo" ref="form">
+            <v-text-field label="메모의 제목을 입력해주세요" dense counter maxlength="25" clearable class="mt-7 headline alingcenter" :rules="rules" required height="40" v-model="memotitle" v-if="formopen">
+            </v-text-field>
+            <v-textarea outlined name="input-7-4" label="메모 내용" class="mt-7" counter clearable v-model="memocontent"></v-textarea>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="formopen = false" class="error">
+                취소
               </v-btn>
-            </template>
-            <v-btn
-            fab
-            dark
-            color="primary"
-            small><v-icon>mdi-plus-box-outline</v-icon></v-btn>
-            <v-btn
-            fab
-            dark
-            color="primary"
-            @click.stop
-            small><v-icon>mdi-grease-pencil</v-icon></v-btn>
-          </v-speed-dial>
-        </v-container>
-      </v-main>
+              <v-btn class="success" type="submit">
+                등록
+              </v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
+     
+      <memo-component>
+        <template>
+          <v-card v-for="(n, i) in memolist" :key="i">
+            <h1>{{n.title}}</h1>
+            <p>{{n.content}}</p>
+          </v-card>
+        </template>
+      </memo-component>
     </v-app>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="./components/MemoComponent.js"></script>
   <script>
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
-      data : {
-        true : true,
-        btnopen : false,
+      data: {
+        formopen : false,
+        btnopen: false,
+        subbtn: [
+          {icon: "mdi-plus-box-outline"},
+          {icon: "mdi-grease-pencil"},
+        ],
+        rules : [v => !!v || '제목을 입력해야 합니다.'],
+        memotitle : "",
+        memocontent : "",
+        memolist : [],
       },
       methods: {
         wheel(e) {
-          if(e.deltaY > 0) {
+          if (e.deltaY > 0) {
             console.log("down" + e.deltaY)
           } else {
             console.log("Up" + e.deltaY)
@@ -75,9 +94,27 @@
         },
         btnOpenToggle() {
           this.btnopen = !this.btnopen
+        },
+        openMemoForm(i) {
+          if(i == 0) {
+            this.formopen = !this.formopen
+          }
+        },
+        async addMemo() {
+          const validate = this.$refs.form.validate()
+          if(validate) {
+            this.memolist.push({
+              title : this.memotitle,
+              content : this.memocontent,
+            })
+            this.formopen = false
+            this.memotitle = ""
+            this.memocontent = ""
+          }
         }
       },
     })
   </script>
 </body>
+
 </html>
