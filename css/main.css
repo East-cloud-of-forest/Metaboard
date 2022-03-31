@@ -10,6 +10,15 @@
   align-items: center;
 }
 
+.btn_index {
+  z-index : 1000;
+}
+
 .alingcenter .v-input__append-inner {
   align-self : center
+}
+
+.memo {
+  position: absolute;
+  text-align: center;
 }
