@@ -60,7 +60,7 @@
       <memo-component>
         <template>
           <v-card v-for="(n, i) in memolist" :key="i" class="memo pa-3 yellow lighten-3" max-width="400" min-width="200"
-            elevation="1" @mousedown.left="onCardDown">
+            elevation="1" @mousedown.left="onCardDown(i, $event)">
             <h1>{{n.title}}</h1>
             <p>{{n.content}}</p>
           </v-card>
