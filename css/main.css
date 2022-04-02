@@ -22,3 +22,11 @@
   position: absolute;
   text-align: center;
 }
+
+.clickmemo {
+  transform: scale(1.05);
+}
+
+.v-toolbar__content {
+  height: 30px !important;
+}

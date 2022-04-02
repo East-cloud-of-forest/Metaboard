@@ -15,7 +15,6 @@ new Vue({
     targetshiftx: 0,
     targetshifty: 0,
     targetlist: 0,
-    targetsize: { left: 50, top: 50 },
   },
   methods: {
     // 휠 감지
@@ -31,34 +30,31 @@ new Vue({
     // 참고 https://ko.javascript.info/mouse-drag-and-drop
     onCardDown(i, e) {
       this.targetlist = i
-      function pushTarget() {
-        if (e.target.toString() == '[object HTMLDivElement]') {
-          this.targetdiv = e.path[0]
-        } else {
-          this.targetdiv = e.path[1]
-        }
-        this.targetshiftx =
-          e.clientX - this.targetdiv.getBoundingClientRect().left
-        this.targetshifty =
-          e.clientY - this.targetdiv.getBoundingClientRect().top
+      if (e.target.toString() == '[object HTMLDivElement]') {
+        this.targetdiv = e.path[2]
+      } else {
+        this.targetdiv = e.path[1]
       }
-      pushTarget()
+      this.targetdiv.classList.add(`clickmemo`)
+      this.targetshiftx =
+        e.clientX - this.targetdiv.getBoundingClientRect().left
+      this.targetshifty = e.clientY - this.targetdiv.getBoundingClientRect().top
 
       this.moveon = true
     },
     onCardMove(e) {
       if (this.moveon) {
         let target = this.memolist[this.targetlist]
-        function moveAt(pageX, pageY) {
-          this.targetdiv.style.left = pageX - this.targetshiftx + 'px'
-          this.targetdiv.style.top = pageY - this.targetshifty + 'px'
-          target.left = pageX - this.targetshiftx
-          target.top = pageY - this.targetshifty
-        }
-        moveAt(e.pageX, e.pageY)
+        this.targetdiv.style.left = e.pageX - this.targetshiftx + 'px'
+        this.targetdiv.style.top = e.pageY - this.targetshifty + 'px'
+        target.left = e.pageX - this.targetshiftx
+        target.top = e.pageY - this.targetshifty
       }
     },
     onCardUp(e) {
+      if (this.targetdiv) {
+        this.targetdiv.classList.remove(`clickmemo`)
+      }
       e.onCardMove = null
       e.onCardUp = null
       this.moveon = false
@@ -78,16 +74,22 @@ new Vue({
     addMemo() {
       // 유효성 검사
       const validate = this.$refs.form.validate()
+      // 메모 리스트에 추가 함수
+      async function creatememofn() {
+        this.memolist.push({
+          title : this.memotitle,
+          content : this.memocontent,
+          left : 0,
+          top : 0,
+          id : this.id,
+        })
+      }
+      let creatememo = creatememofn.bind(this)
+
       if (validate) {
-        creatememo(
-          this.memolist,
-          this.memotitle,
-          this.memocontent,
-          this.id,
-          this.formopen,
+        creatememo().then(() => {
           // 리스트 추가 후 발동
-        ).then(() => {
-          let t = document.getElementById(this.id)
+          let t = document.getElementById('card' + this.id)
           t.style.left = `calc(50% - ${t.getBoundingClientRect().width / 2}px)`
           t.style.top = `calc(50% - ${t.getBoundingClientRect().height / 2}px)`
 
@@ -95,22 +97,6 @@ new Vue({
           this.formopen = false
           this.memotitle = ''
           this.memocontent = ''
-        })
-      }
-
-      // 메모 리스트에 추가 함수
-      async function creatememo(
-        memolist,
-        memotitle,
-        memocontent,
-        id,
-      ) {
-        memolist.push({
-          title: memotitle,
-          content: memocontent,
-          left: 0,
-          top: 0,
-          id: id,
         })
       }
     },

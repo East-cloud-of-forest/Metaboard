@@ -59,10 +59,14 @@
 
       <memo-component>
         <template>
-          <v-card v-for="(n, i) in memolist" :key="i" :id="n.id" class="memo pa-3 yellow lighten-3" :class="'card' + n.id" max-width="400" min-width="200" ref="card"
-            elevation="1" @mousedown.left="onCardDown(i, $event)">
-            <h1>{{n.title}}</h1>
-            <p>{{n.content}}</p>
+          <v-card v-for="(n, i) in memolist" :key="i" :id="'card' + n.id" class="memo yellow lighten-4" max-width="400" min-width="200" ref="card"
+            elevation="1">
+            <v-app-bar flat class="yellow lighten-3" style="height:30px" @mousedown.left="onCardDown(i, $event)">
+            </v-app-bar>
+            <div class="pa-5">
+              <h1>{{n.title}}</h1>
+              <p>{{n.content}}</p>
+            </div>
           </v-card>
         </template>
       </memo-component>
