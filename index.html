@@ -61,12 +61,29 @@
         <template>
           <v-card v-for="(n, i) in memolist" :key="i" :id="'card' + n.id" class="memo yellow lighten-4" max-width="400" min-width="200" ref="card"
             elevation="1">
+
+            <!-- 카드 탑 바 -->
             <v-app-bar flat class="yellow lighten-3" style="height:30px" @mousedown.left="onCardDown(i, $event)">
+              <v-btn @mousedown.stop="" small depressed class="pa-0 memoinbtn" color="yellow lighten-3"><v-icon color="yellow darken-2" dense>
+                mdi-palette</v-icon></v-btn>
+              <v-spacer></v-spacer>
+              <v-btn @mousedown.stop="" small depressed class="pa-0 memoinbtn" color="yellow lighten-3"><v-icon color="grey darken-1" dense>
+                mdi-close-thick</v-icon></v-btn>
             </v-app-bar>
-            <div class="pa-5">
-              <h1>{{n.title}}</h1>
-              <p>{{n.content}}</p>
+
+            <!-- 카드 내용 -->
+            <div class="pa-5 pb-1 text-center">
+              <h2>{{n.title}}</h2>
+              <p class="mb-0">{{n.content}}</p>
             </div>
+
+            <!-- 수정 버튼 -->
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @mousedown.stop="" small depressed class="pa-0 memoinbtn" color="yellow lighten-4"><v-icon color="yellow darken-2" dense>
+              mdi-note-edit-outline</v-icon></v-btn>
+            </v-card-actions>
+
           </v-card>
         </template>
       </memo-component>

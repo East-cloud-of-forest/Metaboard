@@ -20,7 +20,6 @@
 
 .memo {
   position: absolute;
-  text-align: center;
 }
 
 .clickmemo {
@@ -29,4 +28,9 @@
 
 .v-toolbar__content {
   height: 30px !important;
+  padding: 4px;
+}
+
+.memoinbtn {
+  min-width: 0px !important;
 }
