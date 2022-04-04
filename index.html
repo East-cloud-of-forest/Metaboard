@@ -16,84 +16,38 @@
 
 <body>
   <div id="app" @wheel="wheel">
-
-    <!-- 메인 버튼 -->
     <v-app>
-      <div class="fixed flex btn_index">
-        <v-btn fab dark class="mt-3" @click="btnOpenToggle" color="primary">
-          <v-icon v-show="btnopen">mdi-checkbox-blank-circle-outline</v-icon>
-          <v-icon v-show="!btnopen">mdi-dots-vertical</v-icon>
-        </v-btn>
-        <v-slide-y-reverse-transition group class="flex">
-          <v-btn class="mt-3" v-for="(btn, i) in subbtn" :key="i" fab dark color="primary" v-if="btnopen" small
-            @click="openMemoForm(i)">
-            <v-icon>{{btn.icon}}</v-icon>
-          </v-btn>
-      </div>
+      <mainbtn-component
+      :btnopen="btnopen"
+      :subbtn="subbtn"
+      @btnopentoggle="btnOpenToggle"
+      @openmemoform="openMemoForm">
+      </mainbtn-component>
 
+      <memoform-component
+      :formopen="formopen"
+      :memolist="memolist"
+      :rules="rules"
+      @addmemo="addMemo"
+      @closememoform="closeMemoForm"
+      >
+      </memoform-component>
 
-      <!-- 메모 폼 -->
-      <v-dialog v-model="formopen" max-width="450">
-        <v-card>
-          <v-card-title class="accent white--text">
-            메모작성
-          </v-card-title>
-          <v-form class="px-8 pb-4" @submit.prevent="addMemo" ref="form">
-            <v-text-field label="메모의 제목을 입력해주세요" dense counter maxlength="25" clearable
-              class="mt-7 headline alingcenter" :rules="rules" required height="40" v-model="memotitle" v-if="formopen">
-            </v-text-field>
-            <v-textarea outlined name="input-7-4" label="메모 내용" class="mt-7" counter clearable v-model="memocontent">
-            </v-textarea>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn @click="formopen = false" class="error">
-                취소
-              </v-btn>
-              <v-btn class="success" type="submit">
-                등록
-              </v-btn>
-            </v-card-actions>
-          </v-form>
-        </v-card>
-      </v-dialog>
-
-      <memo-component>
-        <template>
-          <v-card v-for="(n, i) in memolist" :key="i" :id="'card' + n.id" class="memo yellow lighten-4" max-width="400" min-width="200" ref="card"
-            elevation="1">
-
-            <!-- 카드 탑 바 -->
-            <v-app-bar flat class="yellow lighten-3" style="height:30px" @mousedown.left="onCardDown(i, $event)">
-              <v-btn @mousedown.stop="" small depressed class="pa-0 memoinbtn" color="yellow lighten-3"><v-icon color="yellow darken-2" dense>
-                mdi-palette</v-icon></v-btn>
-              <v-spacer></v-spacer>
-              <v-btn @mousedown.stop="" small depressed class="pa-0 memoinbtn" color="yellow lighten-3"><v-icon color="grey darken-1" dense>
-                mdi-close-thick</v-icon></v-btn>
-            </v-app-bar>
-
-            <!-- 카드 내용 -->
-            <div class="pa-5 pb-1 text-center">
-              <h2>{{n.title}}</h2>
-              <p class="mb-0">{{n.content}}</p>
-            </div>
-
-            <!-- 수정 버튼 -->
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn @mousedown.stop="" small depressed class="pa-0 memoinbtn" color="yellow lighten-4"><v-icon color="yellow darken-2" dense>
-              mdi-note-edit-outline</v-icon></v-btn>
-            </v-card-actions>
-
-          </v-card>
-        </template>
+      <memo-component
+      :memolist="memolist"
+      @oncarddown="onCardDown"
+      @deletememo="deleteMemo">
       </memo-component>
     </v-app>
   </div>
 
+  <!-- 뷰티파이 -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <!-- 컴포넌트 -->
+  <script src="./components/MainBtnComponent.js"></script>
+  <script src="./components/MemoFormComponent.js"></script>
   <script src="./components/MemoComponent.js"></script>
   <script src="./main.js"></script>
 </body>
-
 </html>

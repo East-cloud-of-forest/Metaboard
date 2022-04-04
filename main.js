@@ -6,8 +6,6 @@ new Vue({
     btnopen: false,
     subbtn: [{ icon: 'mdi-plus-box-outline' }, { icon: 'mdi-grease-pencil' }],
     rules: [(v) => !!v || '제목을 입력해야 합니다.'],
-    memotitle: '',
-    memocontent: '',
     memolist: [],
     id: 0,
     moveon: false,
@@ -26,7 +24,59 @@ new Vue({
       }
     },
 
-    // 카드 드래그 엔 드랍 이벤트
+    // 메인버튼 열기
+    btnOpenToggle() {
+      this.btnopen = !this.btnopen
+    },
+
+    // 메모 입력창 여닫기
+    openMemoForm(i) {
+      if (i == 0) {
+        this.formopen = !this.formopen
+      }
+    },
+    closeMemoForm() {
+      this.formopen = !this.formopen
+    },
+
+    // 메모 추가
+    addMemo(comp) {
+      // 유효성 검사
+      const validate = comp.$refs.form.validate()
+      // 메모 리스트에 추가 함수
+      async function creatememofn() {
+        this.memolist.push({
+          title : comp.memotitle,
+          content : comp.memocontent,
+          left : 0,
+          top : 0,
+          id : this.id,
+        })
+      }
+      let creatememo = creatememofn.bind(this)
+
+      if (validate) {
+        creatememo().then(() => {
+          // 리스트 추가 후 추가된 메모장 가운데 위치
+          let t = document.getElementById('card' + this.id)
+          t.style.left = `calc(50% - ${t.getBoundingClientRect().width / 2}px)`
+          t.style.top = `calc(50% - ${t.getBoundingClientRect().height / 2}px)`
+
+          this.id++
+          this.formopen = false
+        })
+      }
+    },
+    // 메모 삭제
+    deleteMemo(i) {
+      this.memolist.forEach((e, j) => {
+        if(e.id == i) {
+          this.memolist.splice(j, 1)
+        }
+      });
+    },
+
+    // 메모 드래그 엔 드랍 이벤트
     // 참고 https://ko.javascript.info/mouse-drag-and-drop
     onCardDown(i, e) {
       this.targetlist = i
@@ -59,50 +109,9 @@ new Vue({
       e.onCardUp = null
       this.moveon = false
     },
-
-    // 버튼 열기
-    btnOpenToggle() {
-      this.btnopen = !this.btnopen
-    },
-
-    // 메모 입력창 열기
-    openMemoForm(i) {
-      if (i == 0) {
-        this.formopen = !this.formopen
-      }
-    },
-    addMemo() {
-      // 유효성 검사
-      const validate = this.$refs.form.validate()
-      // 메모 리스트에 추가 함수
-      async function creatememofn() {
-        this.memolist.push({
-          title : this.memotitle,
-          content : this.memocontent,
-          left : 0,
-          top : 0,
-          id : this.id,
-        })
-      }
-      let creatememo = creatememofn.bind(this)
-
-      if (validate) {
-        creatememo().then(() => {
-          // 리스트 추가 후 발동
-          let t = document.getElementById('card' + this.id)
-          t.style.left = `calc(50% - ${t.getBoundingClientRect().width / 2}px)`
-          t.style.top = `calc(50% - ${t.getBoundingClientRect().height / 2}px)`
-
-          this.id++
-          this.formopen = false
-          this.memotitle = ''
-          this.memocontent = ''
-        })
-      }
-    },
   },
 
-  // 마우스 벗어났을때 이벤트 중지 방지
+  // 메모장에서 마우스 벗어났을때 이벤트 중지 방지
   mounted() {
     this.$nextTick(function () {
       window.addEventListener('mouseup', this.onCardUp)

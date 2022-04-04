@@ -24,13 +24,22 @@
 
 .clickmemo {
   transform: scale(1.05);
+  /* 텍스트 드래그 방지 */
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none
 }
 
 .v-toolbar__content {
-  height: 30px !important;
-  padding: 4px;
+  /* height: 30px !important; */
+  padding: 0px;
 }
 
 .memoinbtn {
   min-width: 0px !important;
+}
+
+.v-btn:not(.v-btn--round).v-size--small {
+  width : 28px
 }
