@@ -1,3 +1,5 @@
+const EventBus = new Vue();
+
 new Vue({
   el: '#app',
   vuetify: new Vuetify(),
@@ -13,6 +15,8 @@ new Vue({
     targetshiftx: 0,
     targetshifty: 0,
     targetlist: 0,
+    editon: false,
+    edit: {},
   },
   methods: {
     // 휠 감지
@@ -37,6 +41,7 @@ new Vue({
     },
     closeMemoForm() {
       this.formopen = !this.formopen
+      this.editon = false
     },
 
     // 메모 추가
@@ -51,6 +56,8 @@ new Vue({
           left : 0,
           top : 0,
           id : this.id,
+          colortogle : false,
+          color : 'yellow',
         })
       }
       let creatememo = creatememofn.bind(this)
@@ -64,6 +71,7 @@ new Vue({
 
           this.id++
           this.formopen = false
+          this.editon = false
         })
       }
     },
@@ -74,6 +82,32 @@ new Vue({
           this.memolist.splice(j, 1)
         }
       });
+    },
+    // 메모 수정
+    editMemoFormOpen(i) {
+      this.editon = true
+      this.edit.title = this.memolist[i].title
+      this.edit.content = this.memolist[i].content
+      this.edit.id = i
+      this.formopen = true
+    },
+    editMemo(comp) {
+      let i = this.edit.id
+      this.memolist[i].title = comp.memotitle
+      this.memolist[i].content = comp.memocontent
+      this.formopen = false
+      this.editon = false
+    },
+    // 메모 색 변경
+    colorPickOpen(i) {
+      this.memolist[i].colortogle = true
+    },
+    colorPickClose(i) {
+      this.memolist[i].colortogle = false
+    },
+    pickColor(color, i) {
+      this.memolist[i].color = color
+      this.memolist[i].colortogle = false
     },
 
     // 메모 드래그 엔 드랍 이벤트

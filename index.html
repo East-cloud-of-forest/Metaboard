@@ -28,7 +28,10 @@
       :formopen="formopen"
       :memolist="memolist"
       :rules="rules"
+      :editon="editon"
+      :edit="edit"
       @addmemo="addMemo"
+      @editmemo="editMemo"
       @closememoform="closeMemoForm"
       >
       </memoform-component>
@@ -36,7 +39,11 @@
       <memo-component
       :memolist="memolist"
       @oncarddown="onCardDown"
-      @deletememo="deleteMemo">
+      @deletememo="deleteMemo"
+      @colorpickopen="colorPickOpen"
+      @colorpickclose="colorPickClose"
+      @pickcolor="pickColor"
+      @editmemoformopen="editMemoFormOpen">
       </memo-component>
     </v-app>
   </div>
