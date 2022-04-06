@@ -19,15 +19,6 @@ new Vue({
     edit: {},
   },
   methods: {
-    // 휠 감지
-    wheel(e) {
-      if (e.deltaY > 0) {
-        console.log('down' + e.deltaY)
-      } else {
-        console.log('Up' + e.deltaY)
-      }
-    },
-
     // 메인버튼 열기
     btnOpenToggle() {
       this.btnopen = !this.btnopen
@@ -41,7 +32,9 @@ new Vue({
     },
     closeMemoForm() {
       this.formopen = !this.formopen
-      this.editon = false
+      setTimeout(()=>{
+        this.editon = false
+      },300)
     },
 
     // 메모 추가
@@ -58,6 +51,7 @@ new Vue({
           id : this.id,
           colortogle : false,
           color : 'yellow',
+          index : this.memolist.length,
         })
       }
       let creatememo = creatememofn.bind(this)
@@ -71,17 +65,25 @@ new Vue({
 
           this.id++
           this.formopen = false
-          this.editon = false
         })
       }
     },
-    // 메모 삭제
-    deleteMemo(i) {
+    // 메모 삭제 및 순서 재정립
+    deleteMemo(id ,i) {
+      let remove = this.memolist[i].index
       this.memolist.forEach((e, j) => {
-        if(e.id == i) {
+        if(e.id == id) {
           this.memolist.splice(j, 1)
         }
-      });
+        if (this.memolist.length > 0) {
+          if (i == this.memolist.length && j == i) {
+            return
+          }
+          if(remove <= this.memolist[j].index) {
+            this.memolist[j].index--
+          }
+        }
+      })
     },
     // 메모 수정
     editMemoFormOpen(i) {
@@ -96,7 +98,9 @@ new Vue({
       this.memolist[i].title = comp.memotitle
       this.memolist[i].content = comp.memocontent
       this.formopen = false
-      this.editon = false
+      setTimeout(()=>{
+        this.editon = false
+      },300)
     },
     // 메모 색 변경
     colorPickOpen(i) {
@@ -119,6 +123,16 @@ new Vue({
       } else {
         this.targetdiv = e.path[1]
       }
+
+      if (this.memolist.length > 1) {
+        this.memolist.forEach((e, j)=>{
+          if (this.memolist[i].index < this.memolist[j].index) {
+            this.memolist[j].index--
+          }
+        })
+        this.memolist[i].index = this.memolist.length - 1
+      }
+
       this.targetdiv.classList.add(`clickmemo`)
       this.targetshiftx =
         e.clientX - this.targetdiv.getBoundingClientRect().left

@@ -15,7 +15,7 @@
 </head>
 
 <body>
-  <div id="app" @wheel="wheel">
+  <div id="app">
     <v-app>
       <mainbtn-component
       :btnopen="btnopen"
@@ -25,7 +25,7 @@
       </mainbtn-component>
 
       <memoform-component
-      :formopen="formopen"
+      :value="formopen"
       :memolist="memolist"
       :rules="rules"
       :editon="editon"

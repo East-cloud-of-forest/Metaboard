@@ -1,5 +1,5 @@
 Vue.component('memoform-component', {
-  props : ["rules", "memolist", "formopen", "editon", "edit"],
+  props : ["rules", "memolist", "value", "editon", "edit"],
   template : `<v-dialog v-model="formopen" max-width="450">
       <v-card>
         <v-card-title class="white--text" :class="title[1]">
@@ -54,6 +54,15 @@ Vue.component('memoform-component', {
         return ["메모작성", "accent"]
       }
     },
+    // form 외부 클릭시 close
+    formopen : {
+      get() {
+        return this.value
+      },
+      set() {
+        this.closeMemoForm()
+      },
+    }
   },
   created() {
     EventBus.$on('memoformedit',() => {
