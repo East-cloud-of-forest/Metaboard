@@ -17,11 +17,18 @@
 <body>
   <div id="app">
     <v-app>
+      <canvas-component
+      :canvasmode="canvasmode"
+      @no-drag="noDrag"
+      @no-drag-stop="noDragStop"></canvas-component>
+
       <mainbtn-component
       :btnopen="btnopen"
-      :subbtn="subbtn"
+      :canvasbtn="canvasbtn"
       @btnopentoggle="btnOpenToggle"
-      @openmemoform="openMemoForm">
+      @openmemoform="openMemoForm"
+      @canvasbtntoggle="canvasBtnToggle"
+      @canvasmode="canvasMode">
       </mainbtn-component>
 
       <memoform-component
@@ -55,6 +62,7 @@
   <script src="./components/MainBtnComponent.js"></script>
   <script src="./components/MemoFormComponent.js"></script>
   <script src="./components/MemoComponent.js"></script>
+  <script src="./components/CanvasComponent.js"></script>
   <script src="./main.js"></script>
 </body>
 </html>

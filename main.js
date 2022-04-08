@@ -6,7 +6,8 @@ new Vue({
   data: {
     formopen: false,
     btnopen: false,
-    subbtn: [{ icon: 'mdi-plus-box-outline' }, { icon: 'mdi-grease-pencil' }],
+    canvasbtn: false,
+    canvasmode: false,
     rules: [(v) => !!v || '제목을 입력해야 합니다.'],
     memolist: [],
     id: 0,
@@ -23,12 +24,18 @@ new Vue({
     btnOpenToggle() {
       this.btnopen = !this.btnopen
     },
+    canvasBtnToggle() {
+      this.canvasbtn = !this.canvasbtn
+    },
+
+    // canvas 사용
+    canvasMode() {
+      this.canvasmode = !this.canvasmode
+    },
 
     // 메모 입력창 여닫기
-    openMemoForm(i) {
-      if (i == 0) {
-        this.formopen = !this.formopen
-      }
+    openMemoForm() {
+      this.formopen = !this.formopen
     },
     closeMemoForm() {
       this.formopen = !this.formopen
@@ -117,6 +124,7 @@ new Vue({
     // 메모 드래그 엔 드랍 이벤트
     // 참고 https://ko.javascript.info/mouse-drag-and-drop
     onCardDown(i, e) {
+      this.noDrag()
       this.targetlist = i
       if (e.target.toString() == '[object HTMLDivElement]') {
         this.targetdiv = e.path[2]
@@ -156,7 +164,16 @@ new Vue({
       e.onCardMove = null
       e.onCardUp = null
       this.moveon = false
+      this.noDragStop()
     },
+
+    // 드래그 방지
+    noDrag() {
+      document.body.style=`-ms-user-select: none; -moz-user-select: -moz-none; -khtml-user-select: none; -webkit-user-select: none;user-select: none;`
+    },
+    noDragStop() {
+      document.body.style=''
+    }
   },
 
   // 메모장에서 마우스 벗어났을때 이벤트 중지 방지

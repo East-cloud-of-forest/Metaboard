@@ -10,6 +10,12 @@
   align-items: center;
 }
 
+.flex2 {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
 .btn_index {
   z-index : 1000;
 }
