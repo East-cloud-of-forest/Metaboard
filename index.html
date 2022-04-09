@@ -19,16 +19,15 @@
     <v-app>
       <canvas-component
       :canvasmode="canvasmode"
+      :settingform="settingform"
       @no-drag="noDrag"
-      @no-drag-stop="noDragStop"></canvas-component>
+      @no-drag-stop="noDragStop">
+      </canvas-component>
 
       <mainbtn-component
-      :btnopen="btnopen"
-      :canvasbtn="canvasbtn"
-      @btnopentoggle="btnOpenToggle"
       @openmemoform="openMemoForm"
-      @canvasbtntoggle="canvasBtnToggle"
-      @canvasmode="canvasMode">
+      @canvasmode="canvasMode"
+      @drawsetting="drawSetting">
       </mainbtn-component>
 
       <memoform-component
