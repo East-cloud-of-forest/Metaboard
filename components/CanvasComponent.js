@@ -1,6 +1,6 @@
 Vue.component('canvas-component', {
   props: ["canvasmode", "settingform"],
-  template : `<div style="line-height:0;" cursor="wait">
+  template : `<div style="line-height:0;">
     <v-dialog v-model="formtoggle" max-width="450">
       <v-card>
         <v-system-bar :style="{backgroundColor:
@@ -11,7 +11,6 @@ Vue.component('canvas-component', {
           +drawStyle.color.a+ ')'
         }">
         </v-system-bar>
-
         
         <v-card-actions class="align-start">
           <div>
@@ -82,7 +81,12 @@ Vue.component('canvas-component', {
         color: { r: 0, g: 0, b: 0, a: 1 },
         lineWidth: 5,
         lineCap: "round"
-      }
+      },
+      imageData: "",
+      img: "",
+      cursor: [
+        {pointer:'mdi-grease-pencil', style:''}
+      ],
     }
   },
   methods: {
@@ -108,6 +112,11 @@ Vue.component('canvas-component', {
       this.canvas.height = this.stageHeight * this.pixelRatio
 
       this.ctx.scale(this.pixelRatio, this.pixelRatio)
+
+      let draw = ()=>this.ctx.drawImage(this.img, 0, 0)
+      this.img = new Image()
+      this.img.onload = draw
+      this.img.src = this.imageData
     },
 
     drawInit(e) {
@@ -117,6 +126,7 @@ Vue.component('canvas-component', {
       }
       const x = e.offsetX
       const y = e.offsetY
+      this.history = {x, y}
       this.ctx.beginPath()
       this.ctx.moveTo(x, y)
       this.ctx.lineWidth = this.drawStyle.lineWidth
@@ -149,6 +159,7 @@ Vue.component('canvas-component', {
       this.clickOn = false
       this.$emit('no-drag-stop')
       this.ctx.closePath()
+      this.imageData = this.canvas.toDataURL();
     },
   },
   computed : {
@@ -159,7 +170,7 @@ Vue.component('canvas-component', {
       set() {
         EventBus.$emit('canvassubbtn', 2)
       }
-    }
+    },
   },
   mounted() {
     this.constructor()
