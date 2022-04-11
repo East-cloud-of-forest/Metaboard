@@ -5,7 +5,6 @@ new Vue({
   vuetify: new Vuetify(),
   data: {
     formopen: false,
-    canvasmode: false,
     settingform: false,
     rules: [(v) => !!v || '제목을 입력해야 합니다.'],
     memolist: [],
@@ -19,14 +18,6 @@ new Vue({
     edit: {},
   },
   methods: {
-    // canvas 사용 및 모드 전달
-    canvasMode(canvasmode) {
-      this.canvasmode = canvasmode
-    },
-    drawSetting(settingform) {
-      this.settingform = settingform
-    },
-
     // 메모 입력창 여닫기
     openMemoForm() {
       this.formopen = !this.formopen

@@ -1,6 +1,6 @@
 Vue.component('mainbtn-component', {
   template: `<div class="btn_index">
-    <div class="fixed flex" v-show="!canvasmode">
+    <div class="fixed flex" v-show="!canvason">
       <v-btn fab dark
       class="mt-3"
       color="primary"
@@ -16,17 +16,18 @@ Vue.component('mainbtn-component', {
       </v-slide-y-reverse-transition>
     </div>
 
-    <div class="fixed flex2" v-show="canvasmode">
+    <div class="fixed flex2" v-show="canvason">
       <v-btn fab
       class="mt-3"
       color="white primary--text"
-      @click="canvasBtnToggle">
+      @click="canvasBtnToggle"
+      @mouseover="buttonover" @mouseout="buttonout">
         <v-icon v-show="canvasbtn">mdi-checkbox-blank-circle-outline</v-icon>
         <v-icon v-show="!canvasbtn">mdi-dots-vertical</v-icon>
       </v-btn>
 
       <v-slide-y-reverse-transition>
-        <v-btn style="position:absolute; top:-40px; margin-right:8px" @click="canvasModeOver"
+        <v-btn style="position:absolute; top:-40px; margin-right:8px" @click="canvasModeOver" @mouseover="buttonover" @mouseout="buttonout"
           fab color="white primary--text" v-if="canvasbtn" small>
             <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -36,7 +37,8 @@ Vue.component('mainbtn-component', {
         <v-btn class="mt-3 mr-3"
         v-for="(btn, i) in canvssubbtn" :key="i"
         fab :color="btn.activate? 'primary white-text':'white primary--text'"
-        v-if="canvasbtn" small @click="canvasSubBtn(i)">
+        v-if="canvasbtn" small @click="canvasSubBtn(i)"
+        @mouseover="buttonover" @mouseout="buttonout">
           <v-icon>{{btn.icon}}</v-icon>
         </v-btn>
       </v-slide-x-reverse-transition>
@@ -46,7 +48,8 @@ Vue.component('mainbtn-component', {
     return {
       btnopen: false,
       canvasbtn: false,
-      canvasmode: false,
+      canvasmode: 'draw',
+      canvason: false,
       subbtn: [
         { icon: 'mdi-plus-box-outline' }, 
         { icon: 'mdi-grease-pencil' }
@@ -59,6 +62,12 @@ Vue.component('mainbtn-component', {
     }
   },
   methods: {
+    buttonover() {
+      EventBus.$emit('btnhover', false)
+    },
+    buttonout() {
+      EventBus.$emit('btnhover', true)
+    },
     mainBtnToggle() {
       this.btnopen = !this.btnopen
     },
@@ -69,9 +78,10 @@ Vue.component('mainbtn-component', {
         // canvas 사용 모드
         this.mainBtnToggle()
         setTimeout(()=> {
-          this.canvasmode = 'draw'
+          this.canvason = true
           this.canvasBtnToggle()
-          this.$emit('canvasmode', this.canvasmode)
+          EventBus.$emit('canvason', this.canvason)
+          EventBus.$emit('canvasmode', this.canvasmode)
         },300)
       }
     },
@@ -84,27 +94,26 @@ Vue.component('mainbtn-component', {
           this.canvssubbtn[0].activate = true
           this.canvssubbtn[1].activate = false
           this.canvasmode = 'eraser'
-          this.$emit('canvasmode', this.canvasmode)
+          EventBus.$emit('canvasmode', this.canvasmode)
           return
         case 1:
           this.canvssubbtn[1].activate = true
           this.canvssubbtn[0].activate = false
           this.canvasmode = 'draw'
-          this.$emit('canvasmode', this.canvasmode)
+          EventBus.$emit('canvasmode', this.canvasmode)
           return
         case 2:
           this.canvssubbtn[2].activate = !this.canvssubbtn[2].activate
-          this.$emit('drawsetting', this.canvssubbtn[2].activate)
+          EventBus.$emit('drawsetting', this.canvssubbtn[2].activate)
       }
-      this.$emit('')
     },
     canvasModeOver() {
       this.canvasBtnToggle()
       setTimeout(()=> {
         this.canvssubbtn[1].activate = true
         this.canvssubbtn[0].activate = false
-        this.canvasmode = false
-        this.$emit('canvasmode', this.canvasmode)
+        this.canvason = false
+        EventBus.$emit('canvason', this.canvason)
       },300)
     }
   },

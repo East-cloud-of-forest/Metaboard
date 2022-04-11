@@ -18,16 +18,13 @@
   <div id="app">
     <v-app>
       <canvas-component
-      :canvasmode="canvasmode"
       :settingform="settingform"
       @no-drag="noDrag"
       @no-drag-stop="noDragStop">
       </canvas-component>
 
       <mainbtn-component
-      @openmemoform="openMemoForm"
-      @canvasmode="canvasMode"
-      @drawsetting="drawSetting">
+      @openmemoform="openMemoForm">
       </mainbtn-component>
 
       <memoform-component
@@ -38,8 +35,7 @@
       :edit="edit"
       @addmemo="addMemo"
       @editmemo="editMemo"
-      @closememoform="closeMemoForm"
-      >
+      @closememoform="closeMemoForm">
       </memoform-component>
 
       <memo-component

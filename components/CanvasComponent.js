@@ -1,6 +1,5 @@
 Vue.component('canvas-component', {
-  props: ["canvasmode", "settingform"],
-  template : `<div style="line-height:0;">
+  template : `<div style="line-height:0;" :style="mouse">
     <v-dialog v-model="formtoggle" max-width="450">
       <v-card>
         <v-system-bar :style="{backgroundColor:
@@ -11,6 +10,7 @@ Vue.component('canvas-component', {
           +drawStyle.color.a+ ')'
         }">
         </v-system-bar>
+
         
         <v-card-actions class="align-start">
           <div>
@@ -63,6 +63,16 @@ Vue.component('canvas-component', {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <div v-if="canvason"
+    :style="cursorposition" style="position:absolute;">
+      <v-icon samll
+      :color="this.canvasmode == 'draw'?'rgba('
+        +drawStyle.color.r+ ','
+        +drawStyle.color.g+ ','
+        +drawStyle.color.b+ ','
+        +drawStyle.color.a+ ')':''">{{cursor}}</v-icon>
+    </div>
   </div>`,
   data() {
     return {
@@ -72,7 +82,11 @@ Vue.component('canvas-component', {
       stageWidth : 0,
       stageHeight : 0,
       pixelRatio : 0,
+      canvason : false,
+      panuse : false,
       clickOn : false,
+      canvasmode : '',
+      settingform : false,
       drawoption: {
         type : ["round", "butt"],
         size : [2,3,5,7,10,15,20,30],
@@ -84,9 +98,8 @@ Vue.component('canvas-component', {
       },
       imageData: "",
       img: "",
-      cursor: [
-        {pointer:'mdi-grease-pencil', style:''}
-      ],
+      cpositionx: 0,
+      cpositiony: 0,
     }
   },
   methods: {
@@ -99,8 +112,8 @@ Vue.component('canvas-component', {
       window.addEventListener('resize', this.resize, false)
       this.resize()
 
-      this.canvas.addEventListener('mousedown', this.drawInit.bind(this), false)
-      this.canvas.addEventListener('mousemove', this.draw.bind(this), false)
+      document.addEventListener('mousedown', this.drawInit.bind(this), false)
+      document.addEventListener('mousemove', this.draw.bind(this), false)
       window.addEventListener('mouseup', this.drawOver.bind(this), false)
     },
 
@@ -119,16 +132,13 @@ Vue.component('canvas-component', {
       this.img.src = this.imageData
     },
 
-    drawInit(e) {
-      if (this.canvasmode) {
+    drawInit() {
+      if (this.canvason && this.panuse) {
         this.clickOn = true
         this.$emit('no-drag')
       }
-      const x = e.offsetX
-      const y = e.offsetY
-      this.history = {x, y}
       this.ctx.beginPath()
-      this.ctx.moveTo(x, y)
+      this.ctx.moveTo(this.cpositionx, this.cpositiony)
       this.ctx.lineWidth = this.drawStyle.lineWidth
       this.ctx.lineCap = this.drawStyle.lineCap
       if (this.canvasmode == 'draw') {
@@ -145,14 +155,14 @@ Vue.component('canvas-component', {
     },
 
     draw(e) {
-      const x = e.offsetX
-      const y = e.offsetY
       if(this.clickOn) {
-        this.ctx.lineTo(x, y)
+        this.ctx.lineTo(this.cpositionx, this.cpositiony)
         this.ctx.stroke()
         this.ctx.beginPath()
-        this.ctx.moveTo(x, y)
+        this.ctx.moveTo(this.cpositionx, this.cpositiony)
       }
+      this.cpositionx=e.clientX
+      this.cpositiony=e.clientY
     },
 
     drawOver() {
@@ -171,8 +181,53 @@ Vue.component('canvas-component', {
         EventBus.$emit('canvassubbtn', 2)
       }
     },
+    mouse() {
+      let mouse = ``
+      if (this.canvason) {
+        mouse = `cursor:none;`
+      } else {
+        mouse = `cursor:auto`
+      }
+      return mouse
+    },
+    cursor() {
+      let pointer
+      if(this.canvasmode == 'draw') {
+        pointer = 'mdi-grease-pencil'
+      }else if(this.canvasmode == 'eraser') {
+        pointer = 'mdi-eraser'
+      }
+      return pointer
+    },
+    cursorposition() {
+      if(this.canvasmode == 'draw') {
+        return `transform: translateX(${this.cpositionx-1}px) translateY(${this.cpositiony-21}px) translateZ(0) translate3d(0, 0, 0);`
+      }else if(this.canvasmode == 'eraser') {
+        return `transform: translateX(${this.cpositionx-5}px) translateY(${this.cpositiony-20}px) translateZ(0) translate3d(0, 0, 0);`
+      }
+    }
   },
   mounted() {
     this.constructor()
+  },
+  created() {
+    EventBus.$on('canvason',(canvason)=>{
+      // 캔버스 사용 가능 여부
+      this.canvason = canvason
+      // 팬 사용 가능 여부
+      this.panuse = canvason
+    }),
+    EventBus.$on('btnhover',(hover)=>{
+      // 버튼 위에 있을때 캔버스 사용 가능이어도 못 그리도록
+      this.panuse = hover
+    }),
+    EventBus.$on('canvasmode',(canvasmode)=>{
+      this.canvasmode = canvasmode
+    }),
+    EventBus.$on('drawsetting',(drawsetting)=>{
+      this.settingform = drawsetting
+      // 폼이 켜졌을때 팬 사용 가능이어도 못 그리도록
+      this.canvason = !drawsetting
+    })
   },
 })
