@@ -2,6 +2,7 @@ Vue.component("memo-component", {
   props : ["memolist",],
   template : `<div>
     <v-card v-for="(n, i) in memolist" :key="n.id" :id="'card' + n.id" class="memo" :class="n.color+' lighten-4'" max-width="400" min-width="200" ref="card" :style="{zIndex:n.index}"
+    @mouseover="memoover" @mouseout="memoout"
     elevation="1">
 
     <!-- 카드 탑 바 -->
@@ -81,6 +82,12 @@ Vue.component("memo-component", {
     editMemoFormOpen(i) {
       this.$emit('editmemoformopen', i)
       EventBus.$emit('memoformedit')
-    }
+    },
+    memoover() {
+      EventBus.$emit('btnhover', false)
+    },
+    memoout() {
+      EventBus.$emit('btnhover', true)
+    },
   },
 })
