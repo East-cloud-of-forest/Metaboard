@@ -64,8 +64,8 @@ Vue.component('canvas-component', {
       </v-card>
     </v-dialog>
 
-    <div v-if="canvason"
-    :style="cursorposition" style="position:absolute;">
+    <div v-if="canvason" id="corsur"
+    :style="cursorposition" style="position:absolute; opacity:0; transition: opacity 0.4s;">
       <v-icon samll
       :color="this.canvasmode == 'draw'?'rgba('
         +drawStyle.color.r+ ','

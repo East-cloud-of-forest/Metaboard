@@ -116,7 +116,7 @@ new Vue({
       } else {
         this.targetdiv = e.path[1]
       }
-
+      // 메모 클릭시 순서 재배치
       if (this.memolist.length > 1) {
         this.memolist.forEach((e, j)=>{
           if (this.memolist[i].index < this.memolist[j].index) {

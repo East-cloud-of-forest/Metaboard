@@ -63,3 +63,7 @@ html body {
   height: 5px;
   border-radius: 50%;
 }
+
+html:hover #corsur{
+  opacity: 1 !important;
+}
