@@ -88,7 +88,7 @@ Vue.component('canvas-component', {
       canvasmode : '',
       settingform : false,
       drawoption: {
-        type : ["round", "butt"],
+        type : ["round", "square"],
         size : [2,3,5,7,10,15,20,30],
       },
       drawStyle: {
