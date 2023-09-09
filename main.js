@@ -111,11 +111,8 @@ new Vue({
     onCardDown(i, e) {
       this.noDrag()
       this.targetlist = i
-      if (e.target.toString() == '[object HTMLDivElement]') {
-        this.targetdiv = e.path[2]
-      } else {
-        this.targetdiv = e.path[1]
-      }
+      this.targetdiv = e.target.parentElement.parentElement
+
       // 메모 클릭시 순서 재배치
       if (this.memolist.length > 1) {
         this.memolist.forEach((e, j)=>{
